@@ -123,6 +123,12 @@ int thermal_zone_trip_id(struct thermal_zone_device *tz,
 			 const struct thermal_trip *trip);
 int __thermal_zone_get_temp(struct thermal_zone_device *tz, int *temp);
 
+static inline int thermal_zone_trip_threshold(struct thermal_zone_device *tz,
+					      int trip_id)
+{
+	return tz->trip_thresholds[trip_id];
+}
+
 /* sysfs I/F */
 int thermal_zone_create_device_groups(struct thermal_zone_device *, int);
 void thermal_zone_destroy_device_groups(struct thermal_zone_device *);

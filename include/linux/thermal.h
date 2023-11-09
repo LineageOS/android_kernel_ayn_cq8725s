@@ -130,6 +130,7 @@ struct thermal_cooling_device {
  * @trips:	an array of struct thermal_trip
  * @num_trips:	number of trip points the thermal zone supports
  * @trips_disabled;	bitmap for disabled trips
+ * @trip_thresholds:	trip crossing notification thresholds
  * @passive_delay_jiffies: number of jiffies to wait between polls when
  *			performing passive cooling.
  * @polling_delay_jiffies: number of jiffies to wait between polls when
@@ -193,7 +194,7 @@ struct thermal_zone_device {
 	enum thermal_notify_event notify_event;
 	bool suspended;
 
-	ANDROID_KABI_RESERVE(1);
+	ANDROID_KABI_USE(1, int *trip_thresholds);
 };
 
 /**

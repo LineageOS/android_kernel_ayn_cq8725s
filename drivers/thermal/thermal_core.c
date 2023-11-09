@@ -346,6 +346,7 @@ static void handle_critical_trips(struct thermal_zone_device *tz,
 static void handle_thermal_trip(struct thermal_zone_device *tz, int trip_id)
 {
 	struct thermal_trip trip;
+	int *threshold = &tz->trip_thresholds[trip_id];
 
 	/* Ignore disabled trip points */
 	if (test_bit(trip_id, &tz->trips_disabled))
@@ -356,15 +357,44 @@ static void handle_thermal_trip(struct thermal_zone_device *tz, int trip_id)
 	if (trip.temperature == THERMAL_TEMP_INVALID)
 		return;
 
-	if (tz->last_temperature != THERMAL_TEMP_INVALID) {
-		if (tz->last_temperature < trip.temperature &&
-		    tz->temperature >= trip.temperature)
+	if (tz->last_temperature == THERMAL_TEMP_INVALID) {
+		/* Initialization. */
+		*threshold = trip.temperature;
+		if (tz->temperature >= *threshold)
+			*threshold -= trip.hysteresis;
+	} else if (tz->last_temperature < *threshold) {
+		/*
+		 * The trip threshold is equal to the trip temperature, unless
+		 * the latter has changed in the meantime. In either case,
+		 * the trip is crossed if the current zone temperature is at
+		 * least equal to its temperature, but otherwise ensure that
+		 * the threshold and the trip temperature will be equal.
+		 */
+		if (tz->temperature >= trip.temperature) {
 			thermal_notify_tz_trip_up(tz->id, trip_id,
 						  tz->temperature);
-		if (tz->last_temperature >= trip.temperature &&
-		    tz->temperature < (trip.temperature - trip.hysteresis))
+			*threshold = trip.temperature - trip.hysteresis;
+		} else {
+			*threshold = trip.temperature;
+		}
+	} else {
+		/*
+		 * The previous zone temperature was above or equal to the trip
+		 * threshold, which would be equal to the "low temperature" of
+		 * the trip (its temperature minus its hysteresis), unless the
+		 * trip temperature or hysteresis had changed. In either case,
+		 * the trip is crossed if the current zone temperature is below
+		 * the low temperature of the trip, but otherwise ensure that
+		 * the trip threshold will be equal to the low temperature of
+		 * the trip.
+		 */
+		if (tz->temperature < trip.temperature - trip.hysteresis) {
 			thermal_notify_tz_trip_down(tz->id, trip_id,
 						    tz->temperature);
+			*threshold = trip.temperature;
+		} else {
+			*threshold = trip.temperature - trip.hysteresis;
+		}
 	}
 
 	if (trip.type == THERMAL_TRIP_CRITICAL || trip.type == THERMAL_TRIP_HOT)
@@ -1299,6 +1329,16 @@ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *t
 		}
 	}
 
+	if (num_trips) {
+		tz->trip_thresholds = kcalloc(num_trips,
+					      sizeof(*tz->trip_thresholds),
+					      GFP_KERNEL);
+		if (!tz->trip_thresholds) {
+			result = -ENOMEM;
+			goto free_tzp;
+		}
+	}
+
 	INIT_LIST_HEAD(&tz->thermal_instances);
 	INIT_LIST_HEAD(&tz->node);
 	ida_init(&tz->ida);
@@ -1306,7 +1346,7 @@ thermal_zone_device_register_with_trips(const char *type, struct thermal_trip *t
 	id = ida_alloc(&thermal_tz_ida, GFP_KERNEL);
 	if (id < 0) {
 		result = id;
-		goto free_tzp;
+		goto free_trip_thresholds;
 	}
 
 	tz->id = id;
@@ -1400,6 +1440,8 @@ release_device:
 	put_device(&tz->device);
 remove_id:
 	ida_free(&thermal_tz_ida, id);
+free_trip_thresholds:
+	kfree(tz->trip_thresholds);
 free_tzp:
 	kfree(tz->tzp);
 free_tz:
@@ -1487,6 +1529,7 @@ void thermal_zone_device_unregister(struct thermal_zone_device *tz)
 
 	device_del(&tz->device);
 
+	kfree(tz->trip_thresholds);
 	kfree(tz->tzp);
 
 	put_device(&tz->device);
