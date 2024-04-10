@@ -309,8 +309,10 @@ static void monitor_thermal_zone(struct thermal_zone_device *tz)
 
 static void handle_non_critical_trips(struct thermal_zone_device *tz, int trip)
 {
-	tz->governor ? tz->governor->throttle(tz, trip) :
-		       def_governor->throttle(tz, trip);
+	struct thermal_governor *governor = tz->governor ?: def_governor;
+
+	if (governor->throttle)
+		governor->throttle(tz, trip);
 }
 
 void thermal_zone_device_critical(struct thermal_zone_device *tz)
@@ -437,6 +439,7 @@ static void thermal_zone_device_init(struct thermal_zone_device *tz)
 void __thermal_zone_device_update(struct thermal_zone_device *tz,
 				  enum thermal_notify_event event)
 {
+	struct thermal_governor *governor;
 	int count;
 
 	if (tz->suspended)
@@ -458,6 +461,10 @@ void __thermal_zone_device_update(struct thermal_zone_device *tz,
 
 	for (count = 0; count < tz->num_trips; count++)
 		handle_thermal_trip(tz, count);
+
+	governor = tz->governor ? tz->governor : def_governor;
+	if (governor->manage)
+		governor->manage(tz);
 
 	monitor_thermal_zone(tz);
 }

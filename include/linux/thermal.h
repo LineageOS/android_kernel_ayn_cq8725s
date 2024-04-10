@@ -205,6 +205,7 @@ struct thermal_zone_device {
  *		otherwise it fails.
  * @unbind_from_tz:	callback called when a governor is unbound from a
  *			thermal zone.
+ * @manage:	callback called on thermal zone temperature updates
  * @throttle:	callback called for every trip point even if temperature is
  *		below the trip point temperature
  * @governor_list:	node in thermal_governor_list (in thermal_core.c)
@@ -216,7 +217,7 @@ struct thermal_governor {
 	int (*throttle)(struct thermal_zone_device *tz, int trip);
 	struct list_head	governor_list;
 
-	ANDROID_KABI_RESERVE(1);
+	ANDROID_KABI_USE(1, void (*manage)(struct thermal_zone_device *tz));
 };
 
 /* Structure to define Thermal Zone parameters */
