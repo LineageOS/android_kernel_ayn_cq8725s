@@ -79,7 +79,8 @@ static void update_passive_instance(struct thermal_zone_device *tz,
 		tz->passive += value;
 }
 
-static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip_id)
+static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip_id,
+				     int trip_threshold)
 {
 	const struct thermal_trip *trip = &tz->trips[trip_id];
 	enum thermal_trend trend;
@@ -89,13 +90,13 @@ static void thermal_zone_trip_update(struct thermal_zone_device *tz, int trip_id
 
 	trend = get_tz_trend(tz, trip_id);
 
-	if (tz->temperature >= trip->temperature) {
+	if (tz->temperature >= trip_threshold) {
 		throttle = true;
 		trace_thermal_zone_trip(tz, trip_id, trip->type);
 	}
 
 	dev_dbg(&tz->device, "Trip%d[type=%d,temp=%d]:trend=%d,throttle=%d\n",
-		trip_id, trip->type, trip->temperature, trend, throttle);
+		trip_id, trip->type, trip_threshold, trend, throttle);
 
 	list_for_each_entry(instance, &tz->thermal_instances, tz_node) {
 		if (instance->trip != trip)
@@ -148,7 +149,8 @@ static void step_wise_manage(struct thermal_zone_device *tz)
 		    trip->type == THERMAL_TRIP_HOT)
 			continue;
 
-		thermal_zone_trip_update(tz, trip_id);
+		thermal_zone_trip_update(tz, trip_id,
+					 thermal_zone_trip_threshold(tz, trip_id));
 	}
 
 	list_for_each_entry(instance, &tz->thermal_instances, tz_node)
