@@ -16,6 +16,23 @@
       "message": "This doesn\u0027t look device specific",
       "revId": "78cf81999ef4615d5c8a909e03dcd11bc892b2ba",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "0e5ad0b9_5153cac6",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 4550
+      },
+      "writtenOn": "2026-10-15T21:34:29Z",
+      "side": 1,
+      "message": "https://review.lineageos.org/c/LineageOS/android_kernel_qcom_sm8650/+/452394 I don\u0027t know why this commit is needed",
+      "revId": "78cf81999ef4615d5c8a909e03dcd11bc892b2ba",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
