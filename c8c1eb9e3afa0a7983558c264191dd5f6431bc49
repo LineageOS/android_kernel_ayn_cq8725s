@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "c78ee890_7cb464c5",
+        "filename": "arch/arm64/configs/vendor/moorechip/sun_perf.config",
+        "patchSetId": 4
+      },
+      "lineNbr": 1,
+      "author": {
+        "id": 26067
+      },
+      "writtenOn": "2026-10-15T21:51:30Z",
+      "side": 1,
+      "message": "system_dlkm, drop",
+      "revId": "c8c1eb9e3afa0a7983558c264191dd5f6431bc49",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "1e90eb50_c0c5513d",
+        "filename": "arch/arm64/configs/vendor/moorechip/sun_perf.config",
+        "patchSetId": 4
+      },
+      "lineNbr": 4,
+      "author": {
+        "id": 26067
+      },
+      "writtenOn": "2026-10-15T21:51:30Z",
+      "side": 1,
+      "message": "drop? bypass in cmdline if needed",
+      "revId": "c8c1eb9e3afa0a7983558c264191dd5f6431bc49",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": true,
+      "key": {
+        "uuid": "d364c26a_05e4a7f7",
+        "filename": "arch/arm64/configs/vendor/moorechip/sun_perf.config",
+        "patchSetId": 4
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 26067
+      },
+      "writtenOn": "2026-10-15T21:51:30Z",
+      "side": 1,
+      "message": "same",
+      "revId": "c8c1eb9e3afa0a7983558c264191dd5f6431bc49",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    }
+  ]
+}
