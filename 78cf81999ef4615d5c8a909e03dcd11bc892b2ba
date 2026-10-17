@@ -33,6 +33,24 @@
       "message": "https://review.lineageos.org/c/LineageOS/android_kernel_qcom_sm8650/+/452394 I don\u0027t know why this commit is needed",
       "revId": "78cf81999ef4615d5c8a909e03dcd11bc892b2ba",
       "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
+    },
+    {
+      "unresolved": false,
+      "key": {
+        "uuid": "2aeede04_f35f0dff",
+        "filename": "/PATCHSET_LEVEL",
+        "patchSetId": 4
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 16185
+      },
+      "writtenOn": "2026-10-17T19:21:03Z",
+      "side": 1,
+      "message": "Acknowledged",
+      "parentUuid": "0e5ad0b9_5153cac6",
+      "revId": "78cf81999ef4615d5c8a909e03dcd11bc892b2ba",
+      "serverId": "1ec6b3db-b2c1-4fa4-84a2-4c7efe89ba71"
     }
   ]
 }
